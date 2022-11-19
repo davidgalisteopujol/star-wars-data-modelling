@@ -7,36 +7,16 @@ from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
 Base = declarative_base()
-
-# class Person(Base):
-#     __tablename__ = 'person'
-#     # Here we define columns for the table person
-#     # Notice that each column is also a normal Python instance attribute.
-#     id = Column(Integer, primary_key=True)
-#     name = Column(String(250), nullable=False)
-
-# class Address(Base):
-#     __tablename__ = 'address'
-#     # Here we define columns for the table address.
-#     # Notice that each column is also a normal Python instance attribute.
-#     id = Column(Integer, primary_key=True)
-#     street_name = Column(String(250))
-#     street_number = Column(String(250))
-#     post_code = Column(String(250), nullable=False)
-#     person_id = Column(Integer, ForeignKey('person.id'))
-#     person = relationship(Person)
 class Person(Base):
     __tablename__ = 'user'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key = True)
-    name = Column(String(250), nullable = True) #puede o no puede ser nulo
+    name = Column(String(250), nullable = True) 
     surname = Column(String(250))
     password = Column(String(7), nullable = True)
     email = Column(String(250), nullable = True)
     suscription_date = Column(Integer, nullable = True)
     favorites_id = Column(Integer, ForeignKey("favorites.id"))
-    # favorites = relationship(Favorites)
+    favorites = relationship("Favorites")
 
 
 class Favorites(Base):
@@ -45,11 +25,11 @@ class Favorites(Base):
     user_id = Column(Integer, ForeignKey("user.id"))
     user = relationship(Person)
     character_id = Column(Integer, ForeignKey("character.id"))
-    # character = relationship(Character)
+    character = relationship("Character")
     planet_id = Column(Integer, ForeignKey("planet.id"))
-    # planet = relationship(Planet)
+    planet = relationship("Planet")
     starship_id = Column(Integer, ForeignKey("starship.id"))
-    # starship = relationship(starship)
+    starship = relationship("starship")
 
 class Character(Base):
     __tablename__ = 'character'
