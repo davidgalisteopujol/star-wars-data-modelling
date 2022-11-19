@@ -1,101 +1,79 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
+import enum
 
 Base = declarative_base()
 
-# class Person(Base):
-#     __tablename__ = 'person'
-#     # Here we define columns for the table person
-#     # Notice that each column is also a normal Python instance attribute.
-#     id = Column(Integer, primary_key=True)
-#     name = Column(String(250), nullable=False)
+class Media_enum(enum.Enum):
+    imagen = "imagen",
+    video = "video"
 
-# class Address(Base):
-#     __tablename__ = 'address'
-#     # Here we define columns for the table address.
-#     # Notice that each column is also a normal Python instance attribute.
-#     id = Column(Integer, primary_key=True)
-#     street_name = Column(String(250))
-#     street_number = Column(String(250))
-#     post_code = Column(String(250), nullable=False)
-#     person_id = Column(Integer, ForeignKey('person.id'))
-#     person = relationship(Person)
-class Person(Base):
-    __tablename__ = 'user'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = "user"
     id = Column(Integer, primary_key = True)
-    name = Column(String(250), nullable = True) #puede o no puede ser nulo
+    name = Column(String(250), nullable = True) 
     surname = Column(String(250))
     password = Column(String(7), nullable = True)
     email = Column(String(250), nullable = True)
     suscription_date = Column(Integer, nullable = True)
-    favorites_id = Column(Integer, ForeignKey("favorites.id"))
-    # favorites = relationship(Favorites)
-
+    saved_id = Column(Integer, ForeignKey("saved.id"))
+    saved = relationship("Saved")
 
 class Favorites(Base):
     __tablename__ = "favorites"
     id = Column(Integer, primary_key = True)
     user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship(Person)
-    character_id = Column(Integer, ForeignKey("character.id"))
-    # character = relationship(Character)
-    planet_id = Column(Integer, ForeignKey("planet.id"))
-    # planet = relationship(Planet)
-    starship_id = Column(Integer, ForeignKey("starship.id"))
-    # starship = relationship(starship)
+    user = relationship("User")
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship("Post")
 
-class Character(Base):
-    __tablename__ = 'character'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable = True)
-    description = Column(String(250), nullable = True) 
-    height = Column(Integer, nullable = True)
-    mass = Column(Integer, nullable = True)
-    hair_color = Column(String(250), nullable = True)
-    skin_color = Column(String(250), nullable = True)
-    eye_color = Column(String(250), nullable = True)	
-    birthday_year = Column(Integer, nullable = True)
-    Gender = Column(String(250), nullable = True)
+class Post(Base):
+    __tablename__ = "post"
+    id = Column(Integer, primary_key = True)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User")
+    text = Column(String(250))
+    date = Column(String(8), nullable = True)
+    media = Column(String, ForeignKey("media.id"))
+    media = relationship("Media")
 
-class Planet(Base):
-    __tablename__ = 'planet'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable = True)
-    description = Column(String(250), nullable = True) 
-    diameter = Column(Integer, nullable = True)
-    rotation_period = Column(Integer, nullable = True)
-    orbital_period = Column(Integer, nullable = True)
-    gravity = Column(String(250), nullable = True)
-    population = Column(Integer, nullable = True)
-    climate = Column(String(250), nullable = True)
-    terrain = Column(String(250), nullable = True)
-    surface_water = Column(Integer, nullable = True)
+class Saved(Base):
+    __tablename__ = "saved"
+    id = Column(Integer, primary_key = True)
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship("Post")
 
-class Starship(Base):
-    __tablename__ = 'starship'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable = True)
-    description = Column(String(250), nullable = True)
-    starship_class = Column(String(250), nullable = True)
-    manufacturer = Column(String(250), nullable = True)
-    cost_in_credits = Column(Integer, nullable = True)
-    length = Column(Integer, nullable = True)
-    crew = Column(Integer, nullable = True)
-    passengers = Column(Integer, nullable = True)
-    max_atmosphering_speed = Column(Integer, nullable = True)
-    hyperdrive_rating = Column(Integer, nullable = True)
-    mglt = Column(Integer, nullable = True)
-    cargo_capacity = Column(Integer, nullable = True)
-    consumables = Column(Integer, nullable = True)
+class Media(Base):
+    __tablename__ = "media"
+    id = Column(Integer, primary_key = True)
+    type = Column(Enum(Media_enum))
+    url = Column(String, nullable = True)
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship("Post")
 
-   
+class Comment(Base):
+    __tablename__ = "comment"
+    id = Column(Integer, primary_key = True)
+    comment_text = Column(String(250), nullable = True)
+    date = Column(String(8), nullable = True)
+    author_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User")
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship("Post")
+
+class Follower(Base):
+    __tablename__ = "follower"
+    id = Column(Integer, primary_key = True)
+    user_from_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User")
+    user_to_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User")
+
     def to_dict(self):
         return {}
 
