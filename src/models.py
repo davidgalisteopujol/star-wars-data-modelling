@@ -21,8 +21,7 @@ class User(Base):
     password = Column(String(7), nullable = True)
     email = Column(String(250), nullable = True)
     suscription_date = Column(Integer, nullable = True)
-    saved_id = Column(Integer, ForeignKey("saved.id"))
-    saved = relationship("Saved")
+    
 
 class Favorites(Base):
     __tablename__ = "favorites"
@@ -45,6 +44,8 @@ class Post(Base):
 class Saved(Base):
     __tablename__ = "saved"
     id = Column(Integer, primary_key = True)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User")
     post_id = Column(Integer, ForeignKey("post.id"))
     post = relationship("Post")
 
