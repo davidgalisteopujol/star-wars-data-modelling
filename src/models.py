@@ -15,21 +15,21 @@ class Person(Base):
     password = Column(String(7), nullable = True)
     email = Column(String(250), nullable = True)
     suscription_date = Column(Integer, nullable = True)
-    favorites_id = Column(Integer, ForeignKey("favorites.id"))
-    favorites = relationship("Favorites")
+    # favorites_id = Column(Integer, ForeignKey("favorites.id"))
+    # favorites = relationship("Favorites")
 
 
 class Favorites(Base):
     __tablename__ = "favorites"
     id = Column(Integer, primary_key = True)
     user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship(Person)
+    user = relationship("Person")
     character_id = Column(Integer, ForeignKey("character.id"))
     character = relationship("Character")
     planet_id = Column(Integer, ForeignKey("planet.id"))
     planet = relationship("Planet")
     starship_id = Column(Integer, ForeignKey("starship.id"))
-    starship = relationship("starship")
+    starship = relationship("Starship")
 
 class Character(Base):
     __tablename__ = 'character'
